@@ -1,11 +1,18 @@
 <template>
   <div>
     <h1>Fetching data: {{ loading }}</h1>
-    <p v-show="dataIsPresent">
-      {{ list }}
-    </p>
-    <p v-show="error">{{ error }}</p>
-    <button @click="fetchRepositories">fire</button>
+    <div v-show="dataIsPresent">
+      <div v-for="repo in list" :key="repo.id">
+        <p>{{ repo.name }}</p>
+        <p>{{ repo.owner.login }}</p>
+        <p>{{ repo.html_url }}</p>
+      </div>
+
+      <br />
+
+      <h4>Total number of repositories in search: {{ totalCount }}</h4>
+    </div>
+    <p v-if="error">{{ error.message }}</p>
   </div>
 </template>
 
@@ -29,10 +36,11 @@ export default {
       () => !error.value && list.value.length > 0 && !loading.value
     );
 
+    fetchRepositories();
+
     return {
       dataIsPresent,
       error,
-      fetchRepositories,
       list,
       loading,
       totalCount
