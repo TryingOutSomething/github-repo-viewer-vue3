@@ -1,26 +1,32 @@
 import { reactive, toRefs } from "vue";
-import api from "@/services/api";
 
-export default function() {
+export default function(fn, args) {
+  if (!fn) {
+    throw new Error(
+      "[use-api]: !st arguemnt is required! (must be a function) "
+    );
+  }
+
+  if (typeof fn !== "function") {
+    throw new Error(
+      `[use=api]: Invalid data type! Expected function but received ${typeof fn}`
+    );
+  }
+
   const state = reactive({
     response: [],
-    totalCount: 0,
     error: null,
     loading: false
   });
 
-  const fetchRepositories = async args => {
+  const callApi = async () => {
     state.loading = true;
 
     try {
-      const response = await api.getRepositories(args);
-      console.log(response.data);
+      const response = await fn(args);
 
-      state.response = response.data.items;
-      state.totalCount = response.data.total_count;
+      state.response = response.data;
     } catch (err) {
-      console.log(err);
-      console.log(err.response);
       state.error = err;
     } finally {
       state.loading = false;
@@ -29,6 +35,6 @@ export default function() {
 
   return {
     ...toRefs(state),
-    fetchRepositories
+    callApi
   };
 }

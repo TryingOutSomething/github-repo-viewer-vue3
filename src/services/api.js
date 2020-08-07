@@ -6,7 +6,7 @@ const apiClient = axios.create({
   baseURL: BASE_URL
 });
 
-const DEFAULT_ITEMS_PER_PAGE = "10";
+const DEFAULT_ITEMS_PER_PAGE = "2";
 const DEFAULT_SORT_ORDER = "desc";
 const DEFAULT_SORT_BY = "stars";
 const DEFAULT_CURRENT_PAGE = "1";
