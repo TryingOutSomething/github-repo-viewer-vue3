@@ -1,14 +1,15 @@
 <template>
   <div>
-    <h1>Fetching data: {{ loading }}</h1>
+    <h1>View Github projects built with VueJS</h1>
+    <h3>Fetching data: {{ loading }}</h3>
     <div v-show="dataIsPresent">
       <div v-for="repo in list" :key="repo.id">
         <p>{{ repo.name }}</p>
         <p>{{ repo.owner.login }}</p>
-        <p>{{ repo.html_url }}</p>
+        <a :href="repo.html_url" target="_blank">{{ repo.html_url }}</a>
       </div>
 
-      <br />
+      <br/>
 
       <h4>Total number of repositories in search: {{ totalCount }}</h4>
     </div>
@@ -21,7 +22,7 @@ import { computed } from "vue";
 import useRepositories from "@/composables/use-repositories";
 
 export default {
-  name: "HelloWorld",
+  name: "VueRepositories",
 
   setup() {
     const {
@@ -50,20 +51,6 @@ export default {
 </script>
 
 <style scoped>
-h3 {
-  margin: 40px 0 0;
-}
-
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-
 a {
   color: #42b983;
 }
