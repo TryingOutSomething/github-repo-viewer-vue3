@@ -1,14 +1,20 @@
-import { toRefs, reactive } from "vue";
+import { computed, reactive, toRefs } from "vue";
 import useApi from "./use-api";
 import api from "@/services/api";
 
 export default function() {
-  let repositories = reactive({
+  const repositories = reactive({
     list: [],
     totalCount: 0,
     error: null,
     loading: false
   });
+
+  const dataIsPresent = computed(
+    () => !repositories.error &&
+      repositories.list.length > 0 &&
+      !repositories.loading
+  );
 
   const fetchRepositories = async args => {
     const { error, loading, response, callApi } = useApi(
@@ -23,5 +29,9 @@ export default function() {
     repositories.error = error;
   };
 
-  return { fetchRepositories, ...toRefs(repositories) };
+  return {
+    dataIsPresent,
+    fetchRepositories,
+    ...toRefs(repositories)
+  };
 }

@@ -1,6 +1,8 @@
 <template>
   <div>
     <h1>View Github projects built with VueJS</h1>
+    <button @click="nextPage">Next page</button>
+    <button @click="previousPage">Previous page</button>
     <h3>Fetching data: {{ loading }}</h3>
     <div v-show="dataIsPresent">
       <div v-for="repo in list" :key="repo.id">
@@ -18,33 +20,44 @@
 </template>
 
 <script>
-import { computed } from "vue";
+import { watch } from "vue";
 import useRepositories from "@/composables/use-repositories";
+import usePaging from "@/composables/use-paging";
 
 export default {
   name: "VueRepositories",
 
   setup() {
     const {
-      error,
+      dataIsPresent,
       fetchRepositories,
+      error,
       list,
       loading,
       totalCount
     } = useRepositories();
 
-    const dataIsPresent = computed(
-      () => !error.value && list.value.length > 0 && !loading.value
-    );
+    const { nextPage, page, previousPage } = usePaging();
 
-    fetchRepositories();
+    watch(
+      page,
+      (updatedPage) => {
+        fetchRepositories({
+          page: updatedPage,
+          itemsPerPage: 10
+        });
+      },
+      { immediate: true }
+    );
 
     return {
       dataIsPresent,
       error,
       list,
       loading,
-      totalCount
+      totalCount,
+      nextPage,
+      previousPage
     };
   }
 };

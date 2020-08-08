@@ -3,13 +3,13 @@ import { reactive, toRefs } from "vue";
 export default function(fn, args) {
   if (!fn) {
     throw new Error(
-      "[use-api]: !st arguemnt is required! (must be a function) "
+      "[use-api]: 1st argument is required! (must be a function) "
     );
   }
 
   if (typeof fn !== "function") {
     throw new Error(
-      `[use=api]: Invalid data type! Expected function but received ${typeof fn}`
+      `[use-api]: Invalid data type! Expected function but received ${typeof fn}`
     );
   }
 
