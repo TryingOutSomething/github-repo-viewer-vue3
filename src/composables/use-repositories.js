@@ -16,11 +16,11 @@ export default function() {
       args
     );
 
+    repositories.loading = loading;
     await callApi();
     repositories.list = response.value.items;
     repositories.totalCount = response.value.total_count;
     repositories.error = error;
-    repositories.loading = loading;
   };
 
   return { fetchRepositories, ...toRefs(repositories) };
