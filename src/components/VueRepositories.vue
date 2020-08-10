@@ -3,6 +3,19 @@
     <h1>View Github projects built with VueJS</h1>
     <button @click="nextPage">Next page</button>
     <button @click="previousPage">Previous page</button>
+    <button @click="changeOrder">Change order</button>
+
+    <label for="options">Sort by:</label>
+    <select name="options" id="options" v-model="sortBy">
+      <option
+        v-for="option in selectionList"
+        :key="option"
+        :value="option"
+      >
+        {{ option }}
+      </option>
+    </select>
+
     <h3>Fetching data: {{ loading }}</h3>
     <div v-show="dataIsPresent">
       <div v-for="repo in list" :key="repo.id">
@@ -14,13 +27,15 @@
       <br/>
 
       <h4>Total number of repositories in search: {{ totalCount }}</h4>
+      <p>Current page {{ page }}</p>
+      <p>Is descending {{ sortDesc }}</p>
     </div>
     <p v-if="error">{{ error.message }}</p>
   </div>
 </template>
 
 <script>
-import { watch } from "vue";
+import { ref, watch } from "vue";
 import useRepositories from "@/composables/use-repositories";
 import usePaging from "@/composables/use-paging";
 
@@ -37,14 +52,27 @@ export default {
       totalCount
     } = useRepositories();
 
-    const { nextPage, page, previousPage } = usePaging();
+    const {
+      changeOrder,
+      nextPage,
+      page,
+      previousPage,
+      setSortByType,
+      sortBy,
+      sortDesc
+    } = usePaging();
+
+    const selectionList = ref(["star", "forks", "help-wanted-issues", "updated"]);
 
     watch(
-      page,
-      (updatedPage) => {
+      [page, sortDesc, sortBy],
+      (updatedParams) => {
+        let [updatedPage, latestOrder, updatedSortType] = updatedParams;
+
         fetchRepositories({
           page: updatedPage,
-          itemsPerPage: 10
+          sortDesc: latestOrder,
+          sortBy: updatedSortType
         });
       },
       { immediate: true }
@@ -57,7 +85,13 @@ export default {
       loading,
       totalCount,
       nextPage,
-      previousPage
+      previousPage,
+      page,
+      sortBy,
+      sortDesc,
+      changeOrder,
+      setSortByType,
+      selectionList
     };
   }
 };
