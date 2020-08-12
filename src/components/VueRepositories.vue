@@ -2,13 +2,14 @@
   <div>
     <h1>View Github projects built with VueJS</h1>
 
-    <div class="data-table-container">
-      <table class="table is-striped is-bordered">
+    <!--    <div class="container is-fluid">-->
+    <div class="data-table is-fluid">
+      <table class="table is-striped container">
         <thead class="data-table-head has-background-link-light">
         <tr>
-          <th>Repository Name</th>
-          <th>Created By</th>
-          <th>
+          <th class="py-4 pl-5">Repository Name</th>
+          <th class="py-4">Created By</th>
+          <th class="py-4">
             <button
               @click="setSortByType('stars')"
               class="text-btn no-left-padding"
@@ -30,7 +31,7 @@
               />
             </span>
           </th>
-          <th>
+          <th class="py-4">
             <button
               @click="setSortByType('forks')"
               class="text-btn no-left-padding"
@@ -62,11 +63,11 @@
 
         <tbody class="data-table-body" v-show="dataIsPresent">
         <tr :key="repo.id" v-for="repo in list">
-          <td>{{ repo.name }}</td>
-          <td>{{ repo.owner.login }}</td>
-          <td>{{ repo.stargazers_count }}</td>
-          <td>{{ repo.forks }}</td>
-          <td>
+          <td class="py-3 pl-5 pr-6">{{ repo.name }}</td>
+          <td class="py-3 pr-6">{{ repo.owner.login }}</td>
+          <td class="py-3 pr-6">{{ repo.stargazers_count }}</td>
+          <td class="py-3 pr-6">{{ repo.forks }}</td>
+          <td class="py-3 pr-5">
             <form :action="repo.html_url" method="get" target="_blank">
               <button class="text-btn" type="submit">
                 <span class="icon">
@@ -78,13 +79,23 @@
         </tr>
         </tbody>
 
-        <tfoot class="footer">
+        <tfoot class="data-table-footer">
         <tr>
           <td colspan="5">
-            <span class="icon is-small">
-              <i @click="previousPage" class="mdi mdi-chevron-left icon-btn"/>
-              <i @click="nextPage" class="mdi mdi-chevron-right icon-btn"/>
-            </span>
+            <nav class="pagination is-centered py-2">
+              <span>{{ page }} of {{ Math.ceil(totalCount / itemsPerPage) }}</span>
+
+              <span class="icon is-small pl-5" v-if="isNotFirstPage">
+                <i @click="toFirstPage" class="mdi mdi-chevron-double-left icon-btn"/>
+                <i @click="previousPage" class="mdi mdi-chevron-left icon-btn"/>
+              </span>
+
+
+              <span class="icon is-small pr-5" v-if="isNotLastPage">
+                <i @click="nextPage" class="mdi mdi-chevron-right icon-btn"/>
+                <i @click="toLastPage" class="mdi mdi-chevron-double-right icon-btn"/>
+              </span>
+            </nav>
           </td>
         </tr>
         </tfoot>
@@ -94,10 +105,11 @@
     </div>
     <p v-if="error">{{ error.message }}</p>
   </div>
+  <!--  </div>-->
 </template>
 
 <script>
-import { watch } from "vue";
+import { computed, watch } from "vue";
 import useRepositories from "@/composables/use-repositories";
 import usePaging from "@/composables/use-paging";
 
@@ -118,6 +130,7 @@ export default {
       changeOrder,
       isDescendingIconForFork,
       isDescendingIconForStar,
+      itemsPerPage,
       nextPage,
       page,
       previousPage,
@@ -140,6 +153,17 @@ export default {
       { immediate: true }
     );
 
+    const isNotFirstPage = computed(() => page.value > 1);
+    const isNotLastPage = computed(() =>
+      page.value * itemsPerPage.value < 1000
+    );
+
+    const toLastPage = () => {
+      page.value = Math.ceil(1000 / itemsPerPage.value);
+    };
+
+    const toFirstPage = () => page.value = 1;
+
     return {
       dataIsPresent,
       error,
@@ -154,26 +178,22 @@ export default {
       sortBy,
       sortDesc,
       changeOrder,
-      setSortByType
+      setSortByType,
+      isNotFirstPage,
+      isNotLastPage,
+      toFirstPage,
+      toLastPage,
+      itemsPerPage
     };
   }
 };
 </script>
 
 <style scoped>
-/*table {*/
-/*  border-collapse: collapse !important;*/
-/*}*/
-
-/*.data-table-head th, .data-table-body td {*/
-/*  border: 1px solid black;*/
-/*}*/
-
-.data-table-container {
-  display: flex;
-  flex: 1;
-  align-content: center;
-  justify-content: center;
+table {
+  box-shadow: 0 3px 4px 0 rgba(0, 0, 0, 0.14),
+  0 3px 3px -2px rgba(0, 0, 0, 0.12),
+  0 1px 8px 0 rgba(0, 0, 0, 0.20) !important;
 }
 
 .data-table-head th {
@@ -184,6 +204,10 @@ export default {
 
 .data-table-body {
   text-align: start;
+}
+
+.data-table {
+  border-radius: 10px;
 }
 
 .text-btn {
