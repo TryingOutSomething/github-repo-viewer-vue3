@@ -14,6 +14,7 @@ module.exports = {
     "no-debugger": process.env.NODE_ENV === "production" ? "warn" : "off",
     "vue/no-v-model-argument": "off",
     "prettier/prettier": "off",
+    "vue/comment-directive": "off",
   },
 
   extends: ["plugin:vue/essential", "eslint:recommended", "@vue/prettier"]

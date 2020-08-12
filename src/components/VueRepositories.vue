@@ -1,41 +1,103 @@
 <template>
   <div>
     <h1>View Github projects built with VueJS</h1>
-    <button @click="nextPage">Next page</button>
-    <button @click="previousPage">Previous page</button>
-    <button @click="changeOrder">Change order</button>
 
-    <label for="options">Sort by:</label>
-    <select name="options" id="options" v-model="sortBy">
-      <option
-        v-for="option in selectionList"
-        :key="option"
-        :value="option"
-      >
-        {{ option }}
-      </option>
-    </select>
+    <div class="data-table-container">
+      <table class="table is-striped is-bordered">
+        <thead class="data-table-head has-background-link-light">
+        <tr>
+          <th>Repository Name</th>
+          <th>Created By</th>
+          <th>
+            <button
+              @click="setSortByType('stars')"
+              class="text-btn no-left-padding"
+            >
+              Stars
+            </button>
 
-    <h3>Fetching data: {{ loading }}</h3>
-    <div v-show="dataIsPresent">
-      <div v-for="repo in list" :key="repo.id">
-        <p>{{ repo.name }}</p>
-        <p>{{ repo.owner.login }}</p>
-        <a :href="repo.html_url" target="_blank">{{ repo.html_url }}</a>
+            <span class="icon is-small icon-btn" v-if="sortBy === 'stars'">
+              <i
+                @click="changeOrder"
+                class="mdi mdi-chevron-up"
+                v-if="isDescendingIconForStar"
+              />
+
+              <i
+                @click="changeOrder"
+                class="mdi mdi-chevron-down"
+                v-else
+              />
+            </span>
+          </th>
+          <th>
+            <button
+              @click="setSortByType('forks')"
+              class="text-btn no-left-padding"
+            >
+              Forks
+            </button>
+            <span class="icon is-small icon-btn" v-if="sortBy === 'forks'">
+              <i
+                @click="changeOrder"
+                class="mdi mdi-chevron-up"
+                v-if="isDescendingIconForFork"
+              />
+
+              <i
+                @click="changeOrder"
+                class="mdi mdi-chevron-down"
+                v-else
+              />
+            </span>
+          </th>
+          <th>&nbsp;</th>
+        </tr>
+        <tr v-if="loading">
+          <th class="progress-container" colspan="5">
+            <progress class="progress is-small is-info"></progress>
+          </th>
+        </tr>
+        </thead>
+
+        <tbody class="data-table-body" v-show="dataIsPresent">
+        <tr :key="repo.id" v-for="repo in list">
+          <td>{{ repo.name }}</td>
+          <td>{{ repo.owner.login }}</td>
+          <td>{{ repo.stargazers_count }}</td>
+          <td>{{ repo.forks }}</td>
+          <td>
+            <form :action="repo.html_url" method="get" target="_blank">
+              <button class="text-btn" type="submit">
+                <span class="icon">
+                  <i class="mdi mdi-eye mdi-18px"/>
+                </span>
+              </button>
+            </form>
+          </td>
+        </tr>
+        </tbody>
+
+        <tfoot class="footer">
+        <tr>
+          <td colspan="5">
+            <span class="icon is-small">
+              <i @click="previousPage" class="mdi mdi-chevron-left icon-btn"/>
+              <i @click="nextPage" class="mdi mdi-chevron-right icon-btn"/>
+            </span>
+          </td>
+        </tr>
+        </tfoot>
+      </table>
+      <div>
       </div>
-
-      <br/>
-
-      <h4>Total number of repositories in search: {{ totalCount }}</h4>
-      <p>Current page {{ page }}</p>
-      <p>Is descending {{ sortDesc }}</p>
     </div>
     <p v-if="error">{{ error.message }}</p>
   </div>
 </template>
 
 <script>
-import { ref, watch } from "vue";
+import { watch } from "vue";
 import useRepositories from "@/composables/use-repositories";
 import usePaging from "@/composables/use-paging";
 
@@ -54,6 +116,8 @@ export default {
 
     const {
       changeOrder,
+      isDescendingIconForFork,
+      isDescendingIconForStar,
       nextPage,
       page,
       previousPage,
@@ -61,8 +125,6 @@ export default {
       sortBy,
       sortDesc
     } = usePaging();
-
-    const selectionList = ref(["star", "forks", "help-wanted-issues", "updated"]);
 
     watch(
       [page, sortDesc, sortBy],
@@ -84,21 +146,68 @@ export default {
       list,
       loading,
       totalCount,
+      isDescendingIconForFork,
+      isDescendingIconForStar,
       nextPage,
       previousPage,
       page,
       sortBy,
       sortDesc,
       changeOrder,
-      setSortByType,
-      selectionList
+      setSortByType
     };
   }
 };
 </script>
 
 <style scoped>
-a {
-  color: #42b983;
+/*table {*/
+/*  border-collapse: collapse !important;*/
+/*}*/
+
+/*.data-table-head th, .data-table-body td {*/
+/*  border: 1px solid black;*/
+/*}*/
+
+.data-table-container {
+  display: flex;
+  flex: 1;
+  align-content: center;
+  justify-content: center;
+}
+
+.data-table-head th {
+  text-align: start;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.data-table-body {
+  text-align: start;
+}
+
+.text-btn {
+  border: none;
+  background-color: inherit;
+  display: inline-block;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.no-left-padding {
+  padding-left: 0;
+}
+
+.icon-btn {
+  cursor: pointer;
+}
+
+.progress-container {
+  padding: 0 !important;
+}
+
+.progress {
+  height: 5px !important;
 }
 </style>
