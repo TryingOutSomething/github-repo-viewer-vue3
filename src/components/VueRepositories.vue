@@ -2,22 +2,20 @@
   <div>
     <h1>View Github projects built with VueJS</h1>
 
-    <!--    <div class="container is-fluid">-->
-    <div class="data-table is-fluid">
-      <table class="table is-striped container">
-        <thead class="data-table-head has-background-link-light">
-        <tr>
-          <th class="py-4 pl-5">Repository Name</th>
-          <th class="py-4">Created By</th>
-          <th class="py-4">
-            <button
-              @click="setSortByType('stars')"
-              class="text-btn no-left-padding"
-            >
-              Stars
-            </button>
+    <table class="table is-striped container data-table">
+      <thead class="data-table-head">
+      <tr>
+        <th class="py-4 pl-5">Repository Name</th>
+        <th class="py-4">Created By</th>
+        <th class="py-4">
+          <button
+            @click="setSortByType('stars')"
+            class="text-btn no-left-padding"
+          >
+            Stars
+          </button>
 
-            <span class="icon is-small icon-btn" v-if="sortBy === 'stars'">
+          <span class="icon is-small icon-link-btn" v-if="sortBy === 'stars'">
               <i
                 @click="changeOrder"
                 class="mdi mdi-chevron-up"
@@ -30,15 +28,15 @@
                 v-else
               />
             </span>
-          </th>
-          <th class="py-4">
-            <button
-              @click="setSortByType('forks')"
-              class="text-btn no-left-padding"
-            >
-              Forks
-            </button>
-            <span class="icon is-small icon-btn" v-if="sortBy === 'forks'">
+        </th>
+        <th class="py-4">
+          <button
+            @click="setSortByType('forks')"
+            class="text-btn no-left-padding"
+          >
+            Forks
+          </button>
+          <span class="icon is-small icon-link-btn" v-if="sortBy === 'forks'">
               <i
                 @click="changeOrder"
                 class="mdi mdi-chevron-up"
@@ -51,58 +49,72 @@
                 v-else
               />
             </span>
-          </th>
-          <th>&nbsp;</th>
-        </tr>
-        <tr v-if="loading">
-          <th class="progress-container" colspan="5">
-            <progress class="progress is-small is-info"></progress>
-          </th>
-        </tr>
-        </thead>
+        </th>
+        <th class="py-4">&nbsp;</th>
+      </tr>
+      <tr v-if="loading">
+        <th class="progress-container" colspan="5">
+          <progress class="progress is-small is-info"></progress>
+        </th>
+      </tr>
+      </thead>
 
-        <tbody class="data-table-body" v-show="dataIsPresent">
-        <tr :key="repo.id" v-for="repo in list">
-          <td class="py-3 pl-5 pr-6">{{ repo.name }}</td>
-          <td class="py-3 pr-6">{{ repo.owner.login }}</td>
-          <td class="py-3 pr-6">{{ repo.stargazers_count }}</td>
-          <td class="py-3 pr-6">{{ repo.forks }}</td>
-          <td class="py-3 pr-5">
-            <form :action="repo.html_url" method="get" target="_blank">
-              <button class="text-btn" type="submit">
+      <tbody class="data-table-body" v-show="dataIsPresent">
+      <tr :key="repo.id" v-for="repo in list">
+        <td class="py-3 pl-5 pr-6">{{ repo.name }}</td>
+        <td class="py-3 pr-6">{{ repo.owner.login }}</td>
+        <td class="py-3 pr-6">{{ repo.stargazers_count }}</td>
+        <td class="py-3 pr-6">{{ repo.forks }}</td>
+        <td class="py-3" style="text-align: center;">
+          <form :action="repo.html_url" method="get" target="_blank">
+            <button class="text-btn" type="submit">
                 <span class="icon">
                   <i class="mdi mdi-eye mdi-18px"/>
                 </span>
-              </button>
-            </form>
-          </td>
-        </tr>
-        </tbody>
+            </button>
+          </form>
+        </td>
+      </tr>
+      </tbody>
 
-        <tfoot class="data-table-footer">
-        <tr>
-          <td colspan="5">
-            <nav class="pagination is-centered py-2">
-              <span>{{ page }} of {{ Math.ceil(totalCount / itemsPerPage) }}</span>
+      <tfoot class="data-table-footer">
+      <tr>
+        <td class="has-text-left pl-5 py-3">{{ pageInfo }}</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td class="pr-3">
+          <button :disabled="isFirstPage" @click="toFirstPage"
+                  class="text-btn py-1">
+                <span class="icon is-small">
+                  <i class="mdi mdi-chevron-double-left"/>
+                </span>
+          </button>
 
-              <span class="icon is-small pl-5" v-if="isNotFirstPage">
-                <i @click="toFirstPage" class="mdi mdi-chevron-double-left icon-btn"/>
-                <i @click="previousPage" class="mdi mdi-chevron-left icon-btn"/>
-              </span>
+          <button :disabled="isFirstPage" @click="previousPage"
+                  class="text-btn py-1">
+                <span class="icon is-small">
+                  <i class="mdi mdi-chevron-left"/>
+                </span>
+          </button>
+          <!--        </td>-->
+          <!--        <td class="pl-0">-->
+          <button :disabled="isLastPage" @click="nextPage" class="text-btn py-1">
+                <span class="icon is-small">
+                  <i class="mdi mdi-chevron-right"/>
+                </span>
+          </button>
 
+          <button :disabled="isLastPage" @click="toLastPage" class="text-btn py-1">
+                <span class="icon is-small">
+                  <i class="mdi mdi-chevron-double-right"/>
+                </span>
+          </button>
+        </td>
+      </tr>
+      </tfoot>
+    </table>
 
-              <span class="icon is-small pr-5" v-if="isNotLastPage">
-                <i @click="nextPage" class="mdi mdi-chevron-right icon-btn"/>
-                <i @click="toLastPage" class="mdi mdi-chevron-double-right icon-btn"/>
-              </span>
-            </nav>
-          </td>
-        </tr>
-        </tfoot>
-      </table>
-      <div>
-      </div>
-    </div>
     <p v-if="error">{{ error.message }}</p>
   </div>
   <!--  </div>-->
@@ -153,9 +165,9 @@ export default {
       { immediate: true }
     );
 
-    const isNotFirstPage = computed(() => page.value > 1);
-    const isNotLastPage = computed(() =>
-      page.value * itemsPerPage.value < 1000
+    const isFirstPage = computed(() => page.value <= 1);
+    const isLastPage = computed(() =>
+      page.value * itemsPerPage.value >= 1000
     );
 
     const toLastPage = () => {
@@ -163,6 +175,12 @@ export default {
     };
 
     const toFirstPage = () => page.value = 1;
+
+    const pageInfo = computed(
+      () => totalCount.value
+        ? `${page.value} of ${Math.ceil(totalCount.value / itemsPerPage.value)}`
+        : "No data available"
+    );
 
     return {
       dataIsPresent,
@@ -179,11 +197,12 @@ export default {
       sortDesc,
       changeOrder,
       setSortByType,
-      isNotFirstPage,
-      isNotLastPage,
+      isFirstPage,
+      isLastPage,
       toFirstPage,
       toLastPage,
-      itemsPerPage
+      itemsPerPage,
+      pageInfo
     };
   }
 };
@@ -196,10 +215,11 @@ table {
   0 1px 8px 0 rgba(0, 0, 0, 0.20) !important;
 }
 
-.data-table-head th {
+.data-table-head th, .data-table-head button {
   text-align: start;
-  font-weight: bold;
   font-size: 16px;
+  background-color: #4C65E9;
+  color: white;
 }
 
 .data-table-body {
@@ -207,7 +227,25 @@ table {
 }
 
 .data-table {
-  border-radius: 10px;
+  border-radius: 10px !important;
+  -moz-border-radius: 10px !important;
+  -webkit-border-radius: 10px !important;
+}
+
+th:first-of-type {
+  border-top-left-radius: 10px;
+}
+
+th:last-of-type {
+  border-top-right-radius: 10px;
+}
+
+tr:last-of-type td:first-of-type {
+  border-bottom-left-radius: 10px;
+}
+
+tr:last-of-type td:last-of-type {
+  border-bottom-right-radius: 10px;
 }
 
 .text-btn {
@@ -223,7 +261,7 @@ table {
   padding-left: 0;
 }
 
-.icon-btn {
+.icon-link-btn {
   cursor: pointer;
 }
 
@@ -233,5 +271,9 @@ table {
 
 .progress {
   height: 5px !important;
+}
+
+.data-table-footer td {
+  font-size: 12px;
 }
 </style>
