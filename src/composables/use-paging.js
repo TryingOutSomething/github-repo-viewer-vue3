@@ -1,4 +1,4 @@
-import { reactive, toRefs } from "vue";
+import { computed, reactive, toRefs } from "vue";
 import { DEFAULT_PAGING_PARAMS } from "@/utils/constants";
 
 export default function() {
@@ -25,7 +25,17 @@ export default function() {
     state.sortBy = newType;
   };
 
+  const isDescendingIconForStar = computed(
+    () => state.sortDesc && state.sortBy === "stars"
+  );
+
+  const isDescendingIconForFork = computed(
+    () => state.sortDesc && state.sortBy === "forks"
+  );
+
   return {
+    isDescendingIconForFork,
+    isDescendingIconForStar,
     nextPage,
     previousPage,
     changeOrder,
