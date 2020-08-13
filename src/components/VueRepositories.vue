@@ -82,32 +82,38 @@
         <td>&nbsp;</td>
         <td>&nbsp;</td>
         <td class="pr-3">
-          <button :disabled="isFirstPage" @click="toFirstPage"
-                  class="text-btn py-1">
-                <span class="icon is-small">
-                  <i class="mdi mdi-chevron-double-left"/>
-                </span>
-          </button>
+          <icon-button
+            :disabled="isFirstPage"
+            @click="toFirstPage"
+            icon-size="small"
+            icon-type="mdi-chevron-double-left"
+          />
 
-          <button :disabled="isFirstPage" @click="previousPage"
-                  class="text-btn py-1">
-                <span class="icon is-small">
-                  <i class="mdi mdi-chevron-left"/>
-                </span>
-          </button>
-          <!--        </td>-->
-          <!--        <td class="pl-0">-->
-          <button :disabled="isLastPage" @click="nextPage" class="text-btn py-1">
-                <span class="icon is-small">
-                  <i class="mdi mdi-chevron-right"/>
-                </span>
-          </button>
+          <icon-button
+            :disabled="isFirstPage"
+            @click="previousPage"
+            icon-size="small"
+            icon-type="mdi-chevron-left"
+          />
 
-          <button :disabled="isLastPage" @click="toLastPage" class="text-btn py-1">
-                <span class="icon is-small">
-                  <i class="mdi mdi-chevron-double-right"/>
-                </span>
-          </button>
+          <icon-button
+            :disabled="isLastPage"
+            @click="nextPage"
+            icon-size="small"
+            icon-type="mdi-chevron-right"
+          />
+
+          <icon-button
+            :disabled="isLastPage"
+            @click="toLastPage"
+            icon-size="small"
+            icon-type="mdi-chevron-double-right"
+          />
+        </td>
+      </tr>
+      <tr>
+        <td class="pl-5" colspan="5">
+          Only the first 1000 results are allowed to be fetched from the server.
         </td>
       </tr>
       </tfoot>
@@ -115,17 +121,17 @@
 
     <p v-if="error">{{ error.message }}</p>
   </div>
-  <!--  </div>-->
 </template>
 
 <script>
 import { computed, watch } from "vue";
 import useRepositories from "@/composables/use-repositories";
 import usePaging from "@/composables/use-paging";
+import IconButton from "@/components/IconButton";
 
 export default {
   name: "VueRepositories",
-
+  components: { IconButton },
   setup() {
     const {
       dataIsPresent,
@@ -210,6 +216,7 @@ export default {
 .data-table-head th, .data-table-head button {
   text-align: start;
   font-size: 16px;
+  font-weight: 500;
   background-color: #4C65E9;
   color: white;
 }
@@ -267,5 +274,10 @@ tr:last-of-type td:last-of-type {
 
 .data-table-footer td {
   font-size: 12px;
+}
+
+.data-table-footer td:last-child {
+  font-size: 11px;
+  color: #757575;
 }
 </style>
