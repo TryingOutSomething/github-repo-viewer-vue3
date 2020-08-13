@@ -1,8 +1,6 @@
 <template>
   <div>
-    <h1>View Github projects built with VueJS</h1>
-
-    <table class="table is-striped container data-table">
+    <table class="table is-striped container data-table card">
       <thead class="data-table-head">
       <tr>
         <th class="py-4 pl-5">Repository Name</th>
@@ -209,12 +207,6 @@ export default {
 </script>
 
 <style scoped>
-table {
-  box-shadow: 0 3px 4px 0 rgba(0, 0, 0, 0.14),
-  0 3px 3px -2px rgba(0, 0, 0, 0.12),
-  0 1px 8px 0 rgba(0, 0, 0, 0.20) !important;
-}
-
 .data-table-head th, .data-table-head button {
   text-align: start;
   font-size: 16px;

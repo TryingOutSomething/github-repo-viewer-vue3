@@ -1,17 +1,19 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png" />
+    <logo/>
     <vue-repositories />
   </div>
 </template>
 
 <script>
 import VueRepositories from "@/components/VueRepositories";
+import Logo from "@/components/Logo";
 
 export default {
   name: "Home",
   components: {
-    VueRepositories
+    VueRepositories,
+    Logo
   }
 };
 </script>
